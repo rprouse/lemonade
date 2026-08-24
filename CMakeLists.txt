@@ -973,6 +973,7 @@ set(SOURCES_CORE
     src/cpp/server/runtime_config.cpp
     src/cpp/server/telemetry.cpp
     src/cpp/server/logging_config.cpp
+    src/cpp/server/log_rotation.cpp
     src/cpp/server/log_stream.cpp
     src/cpp/server/prometheus_metrics.cpp
     src/cpp/server/utils/http_client.cpp
@@ -2962,6 +2963,13 @@ if(BUILD_TESTING AND EXISTS "${_CONFIG_TELEMETRY_TEST_SRC}")
     add_executable(test_config_telemetry test/cpp/test_config_telemetry.cpp)
     target_link_libraries(test_config_telemetry PRIVATE lemonade-server-core)
     add_cpp_ci_test(ConfigTelemetryTest CI ON COMMAND test_config_telemetry)
+endif()
+
+set(_LOG_ROTATION_TEST_SRC "${CMAKE_CURRENT_SOURCE_DIR}/test/cpp/test_log_rotation.cpp")
+if(BUILD_TESTING AND EXISTS "${_LOG_ROTATION_TEST_SRC}")
+    add_executable(test_log_rotation test/cpp/test_log_rotation.cpp)
+    target_link_libraries(test_log_rotation PRIVATE lemonade-server-core)
+    add_cpp_ci_test(LogRotationTest CI ON COMMAND test_log_rotation)
 endif()
 
 set(_RUNTIME_CONFIG_BACKEND_VALIDATION_TEST_SRC

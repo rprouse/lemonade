@@ -1,11 +1,11 @@
 #include "lemon/logging_config.h"
 
+#include "lemon/log_rotation.h"
 #include "lemon/log_stream.h"
 #include "lemon/runtime_config.h"
 #include "lemon/system_info.h"
 #include "lemon/utils/path_utils.h"
 
-#include <fstream>
 #include <mutex>
 #include <sstream>
 #include <utility>
@@ -32,32 +32,6 @@ public:
 
         LogStreamHub::instance().publish(metadata, formatted);
     }
-};
-
-class FileLogSink : public AixLog::SinkFormat {
-public:
-    FileLogSink(const AixLog::Filter& filter,
-                const std::string& filename,
-                const std::string& format)
-        : AixLog::SinkFormat(filter, format),
-          file_(filename.c_str(), std::ofstream::out | std::ofstream::app) {
-    }
-
-    void log(const AixLog::Metadata& metadata, const std::string& message) override {
-        std::ostringstream stream;
-        do_log(stream, metadata, message);
-
-        std::string formatted = stream.str();
-        if (!formatted.empty() && formatted.back() == '\n') {
-            formatted.pop_back();
-        }
-
-        file_ << formatted << std::endl;
-        file_.flush();
-    }
-
-private:
-    std::ofstream file_;
 };
 
 std::vector<std::shared_ptr<AixLog::Sink>> build_logging_sinks(
